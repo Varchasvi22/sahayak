@@ -9,16 +9,36 @@
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-brand-100 selection:text-brand-900;
+    @apply bg-civic-sand text-slate-900 font-sans antialiased selection:bg-brand-100 selection:text-brand-900;
   }
 
-  /* Accessible focus indicators */
+  /* Accessible focus rings */
   :focus-visible {
-    @apply outline-none ring-2 ring-emerald-600 ring-offset-2 ring-offset-slate-50;
+    @apply outline-none ring-2 ring-civic-emerald ring-offset-2 ring-offset-civic-sand;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight text-slate-900;
   }
 }
 
-/* Subtle civic card elevation */
+/* Reusable civic card class */
 .civic-card {
-  @apply bg-white border border-slate-200/80 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200;
+  @apply bg-white border border-civic-border rounded-xl shadow-subtle hover:shadow-card transition-all duration-200;
+}
+
+/* Subtle scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f0eb;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

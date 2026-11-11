@@ -89,7 +89,7 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Right Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/auth">
+            <Link to="/login">
               <Button variant="ghost" size="sm" leftIcon={<UserCheck className="w-4 h-4" />}>
                 Sign In
               </Button>
@@ -151,7 +151,7 @@ export const Navbar: React.FC = () => {
                 Check Eligibility
               </Button>
             </Link>
-            <Link to="/auth" onClick={closeMobileMenu}>
+            <Link to="/login" onClick={closeMobileMenu}>
               <Button variant="outline" className="w-full">
                 Sign In / Register
               </Button>

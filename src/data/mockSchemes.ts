@@ -1,0 +1,283 @@
+import { Scheme } from '@/types/scheme.types';
+
+export const VERIFIED_SCHEMES: Scheme[] = [
+  {
+    id: 'sch-pm-kisan',
+    slug: 'pm-kisan-samman-nidhi',
+    official_name: 'Pradhan Mantri Kisan Samman Nidhi',
+    short_title: 'PM-Kisan',
+    government_level: 'CENTRAL',
+    beneficiary_category: 'FARMERS',
+    department_name: 'Ministry of Agriculture & Farmers Welfare',
+    brief_description:
+      'Direct income support of ₹6,000 per year in three equal instalments of ₹2,000 directly into the bank accounts of landholding farmer families across India.',
+    detailed_benefits:
+      'Financial assistance of ₹6,000 per annum paid in 3 four-monthly instalments of ₹2,000 via Direct Benefit Transfer (DBT). Fully funded by Central Government.',
+    financial_benefit_amount: 6000,
+    official_portal_name: 'pmkisan.gov.in',
+    official_application_url: 'https://pmkisan.gov.in',
+    official_source_url: 'https://pmkisan.gov.in/Documents/RevisedGuidelines.pdf',
+    last_verified_at: '2026-11-10',
+    application_status: 'ALWAYS_ACTIVE',
+    academic_or_financial_year: 'FY 2026-27',
+    is_active: true,
+    required_document_keys: [
+      'doc_bank_passbook',
+      'doc_land_record',
+      'doc_aadhaar_seed',
+    ],
+    eligibility_rules: {
+      operator: 'AND',
+      conditions: [
+        {
+          field: 'owns_agricultural_land',
+          operator: 'EQUALS',
+          value: true,
+          label: 'Applicant or family must own cultivable agricultural land',
+        },
+        {
+          field: 'employment_status',
+          operator: 'NOT_EQUALS',
+          value: 'SALARIED_GOVERNMENT',
+          label: 'Must not be a serving or retired government / PSU employee',
+        },
+        {
+          field: 'annual_family_income',
+          operator: 'LESS_THAN_OR_EQUAL',
+          value: 1000000,
+          label: 'Must not be an income tax payer in previous assessment year',
+        },
+      ],
+    },
+  },
+  {
+    id: 'sch-ayushman-pmjay',
+    slug: 'ayushman-bharat-pmjay',
+    official_name: 'Ayushman Bharat Pradhan Mantri Jan Arogya Yojana',
+    short_title: 'Ayushman Bharat (PM-JAY)',
+    government_level: 'CENTRAL',
+    beneficiary_category: 'HEALTHCARE',
+    department_name: 'National Health Authority (NHA)',
+    brief_description:
+      'The world’s largest health insurance scheme providing health cover of ₹5,00,000 per family per year for secondary and tertiary care hospitalization.',
+    detailed_benefits:
+      'Cashless and paperless access to healthcare services in empanelled public and private hospitals across India. Covers pre-existing conditions from day one.',
+    financial_benefit_amount: 500000,
+    official_portal_name: 'pmjay.gov.in',
+    official_application_url: 'https://pmjay.gov.in',
+    official_source_url: 'https://nha.gov.in/PM-JAY',
+    last_verified_at: '2026-11-08',
+    application_status: 'ALWAYS_ACTIVE',
+    academic_or_financial_year: 'FY 2026-27',
+    is_active: true,
+    required_document_keys: [
+      'doc_ration_card',
+      'doc_bank_passbook',
+      'doc_voter_id',
+    ],
+    eligibility_rules: {
+      operator: 'AND',
+      conditions: [
+        {
+          field: 'has_bpl_card',
+          operator: 'EQUALS',
+          value: true,
+          label: 'Family must be identified under SECC 2011 or NFSA BPL ration category',
+        },
+        {
+          field: 'annual_family_income',
+          operator: 'LESS_THAN_OR_EQUAL',
+          value: 250000,
+          label: 'Annual family income must not exceed ₹2,50,000',
+        },
+      ],
+    },
+  },
+  {
+    id: 'sch-post-matric-sc',
+    slug: 'post-matric-scholarship-sc',
+    official_name: 'Post Matric Scholarship for Scheduled Caste Students',
+    short_title: 'Post-Matric Scholarship (SC)',
+    government_level: 'CENTRAL',
+    beneficiary_category: 'STUDENTS',
+    department_name: 'Ministry of Social Justice and Empowerment',
+    brief_description:
+      'Centrally sponsored scheme providing 100% tuition fee reimbursement and monthly maintenance allowance for SC students pursuing Class 11, 12, degree, or professional studies.',
+    detailed_benefits:
+      'Full non-refundable compulsory fees reimbursed plus monthly maintenance allowance up to ₹1,200/month directly deposited to student account.',
+    financial_benefit_amount: 45000,
+    official_portal_name: 'scholarships.gov.in',
+    official_application_url: 'https://scholarships.gov.in',
+    official_source_url: 'https://socialjustice.gov.in/schemes/post-matric-scholarship-sc',
+    last_verified_at: '2026-11-11',
+    application_status: 'OPEN',
+    academic_or_financial_year: 'AY 2026-27',
+    is_active: true,
+    required_document_keys: [
+      'doc_caste_cert',
+      'doc_income_cert',
+      'doc_marksheet_10',
+      'doc_college_id',
+      'doc_bank_passbook',
+    ],
+    eligibility_rules: {
+      operator: 'AND',
+      conditions: [
+        {
+          field: 'social_category',
+          operator: 'EQUALS',
+          value: 'SC',
+          label: 'Applicant must belong to Scheduled Caste (SC) community',
+        },
+        {
+          field: 'is_student',
+          operator: 'EQUALS',
+          value: true,
+          label: 'Must be currently enrolled in post-matric recognized institution',
+        },
+        {
+          field: 'annual_family_income',
+          operator: 'LESS_THAN_OR_EQUAL',
+          value: 250000,
+          label: 'Total family income from all sources must not exceed ₹2,50,000/year',
+        },
+      ],
+    },
+  },
+  {
+    id: 'sch-sukanya-samriddhi',
+    slug: 'sukanya-samriddhi-yojana',
+    official_name: 'Sukanya Samriddhi Account Yojana (SSY)',
+    short_title: 'Sukanya Samriddhi Yojana',
+    government_level: 'CENTRAL',
+    beneficiary_category: 'WOMEN',
+    department_name: 'Ministry of Finance / India Post',
+    brief_description:
+      'Small deposit savings scheme for the girl child under Beti Bachao Beti Padhao campaign offering government-backed 8.2% tax-free interest and maturity benefits.',
+    detailed_benefits:
+      'Government sovereign guarantee, highest small-savings interest rate (8.2% p.a.), Section 80C tax deduction, tax-free interest and tax-free maturity amount.',
+    financial_benefit_amount: 150000,
+    official_portal_name: 'indiapost.gov.in',
+    official_application_url: 'https://www.indiapost.gov.in',
+    official_source_url: 'https://www.nsiindia.gov.in',
+    last_verified_at: '2026-11-05',
+    application_status: 'ALWAYS_ACTIVE',
+    academic_or_financial_year: 'FY 2026-27',
+    is_active: true,
+    required_document_keys: [
+      'doc_birth_cert',
+      'doc_parent_id',
+      'doc_bank_passbook',
+    ],
+    eligibility_rules: {
+      operator: 'AND',
+      conditions: [
+        {
+          field: 'gender',
+          operator: 'EQUALS',
+          value: 'FEMALE',
+          label: 'Beneficiary must be a female child',
+        },
+        {
+          field: 'age',
+          operator: 'LESS_THAN_OR_EQUAL',
+          value: 10,
+          label: 'Account can only be opened before girl child reaches 10 years of age',
+        },
+      ],
+    },
+  },
+  {
+    id: 'sch-yuva-nidhi',
+    slug: 'karnataka-yuva-nidhi-scheme',
+    official_name: 'Karnataka Yuva Nidhi Unemployment Allowance Scheme',
+    short_title: 'Yuva Nidhi (Karnataka)',
+    government_level: 'STATE',
+    state_or_ut: 'Karnataka',
+    beneficiary_category: 'EMPLOYMENT_SEEKERS',
+    department_name: 'Department of Skill Development, Govt. of Karnataka',
+    brief_description:
+      'Monthly unemployment financial assistance of ₹3,000 for degree holders and ₹1,500 for diploma holders who graduated in Karnataka and have not secured employment.',
+    detailed_benefits:
+      'Monthly direct bank transfer: ₹3,000/month for Graduates; ₹1,500/month for Diploma holders for up to 24 months or until employment.',
+    financial_benefit_amount: 36000,
+    official_portal_name: 'sevasindhuservices.karnataka.gov.in',
+    official_application_url: 'https://sevasindhuservices.karnataka.gov.in',
+    official_source_url: 'https://karnataka.gov.in/schemes',
+    last_verified_at: '2026-11-09',
+    application_status: 'OPEN',
+    academic_or_financial_year: 'AY 2026-27',
+    is_active: true,
+    required_document_keys: [
+      'doc_domicile_cert',
+      'doc_degree_cert',
+      'doc_bank_passbook',
+      'doc_income_cert',
+    ],
+    eligibility_rules: {
+      operator: 'AND',
+      conditions: [
+        {
+          field: 'state_of_residence',
+          operator: 'EQUALS',
+          value: 'Karnataka',
+          label: 'Must be a permanent resident / domicile of Karnataka',
+        },
+        {
+          field: 'employment_status',
+          operator: 'EQUALS',
+          value: 'UNEMPLOYED',
+          label: 'Must be currently unemployed after completion of degree / diploma',
+        },
+        {
+          field: 'education_level',
+          operator: 'IN',
+          value: ['GRADUATE', 'DIPLOMA', 'POST_GRADUATE'],
+          label: 'Must hold a recognized Diploma or Bachelor / Post Graduate Degree',
+        },
+      ],
+    },
+  },
+  {
+    id: 'sch-atal-pension',
+    slug: 'atal-pension-yojana',
+    official_name: 'Atal Pension Yojana (APY)',
+    short_title: 'Atal Pension Yojana',
+    government_level: 'CENTRAL',
+    beneficiary_category: 'SENIOR_CITIZENS',
+    department_name: 'Pension Fund Regulatory and Development Authority (PFRDA)',
+    brief_description:
+      'Guaranteed monthly pension scheme of ₹1,000 to ₹5,000 for unorganized sector workers, starting at age 60 with government co-contribution.',
+    detailed_benefits:
+      'Guaranteed lifetime monthly pension from ₹1,000 up to ₹5,000 after 60 years of age. Same pension to spouse on death, and return of full corpus to nominee.',
+    financial_benefit_amount: 60000,
+    official_portal_name: 'npscra.nsdl.co.in',
+    official_application_url: 'https://www.npscra.nsdl.co.in',
+    official_source_url: 'https://pfrda.org.in',
+    last_verified_at: '2026-11-07',
+    application_status: 'ALWAYS_ACTIVE',
+    academic_or_financial_year: 'FY 2026-27',
+    is_active: true,
+    required_document_keys: [
+      'doc_bank_passbook',
+      'doc_voter_id',
+    ],
+    eligibility_rules: {
+      operator: 'AND',
+      conditions: [
+        {
+          field: 'age',
+          operator: 'BETWEEN',
+          value: [18, 40],
+          label: 'Entry age must be between 18 and 40 years',
+        },
+        {
+          field: 'employment_status',
+          operator: 'NOT_EQUALS',
+          value: 'SALARIED_GOVERNMENT',
+          label: 'Must not be covered under any statutory social security scheme',
+        },
+      ],
+    },
+  },
+];
