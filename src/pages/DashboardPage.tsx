@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { formatINR } from '@/lib/utils';
 import { VERIFIED_SCHEMES } from '@/data/mockSchemes';
+import { useAuth } from '@/contexts/AuthContext';
+import { getLocalOnboarding } from '@/services/profileService';
 import {
   TrendingUp,
   AlertTriangle,
@@ -13,25 +15,34 @@ import {
   ExternalLink,
   ArrowRight,
   User,
+  Sparkles,
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
-  // Demo Citizen State
-  const [citizen] = useState({
-    name: 'Priya Sharma',
-    state: 'Uttar Pradesh',
-    district: 'Varanasi',
-    category: 'SC (Scheduled Caste)',
-    status: 'Student (Bachelor of Science)',
-    annualIncome: 180000,
-  });
+  const { user, profile } = useAuth();
+  const localDraft = getLocalOnboarding();
+
+  // Determine active profile parameters
+  const citizen = {
+    name: profile?.full_name || localDraft?.fullName || user?.user_metadata?.full_name || 'Applicant',
+    state: profile?.state_of_residence || localDraft?.stateOfResidence || 'Uttar Pradesh',
+    district: profile?.district || localDraft?.district || 'Varanasi',
+    category: profile?.social_category || localDraft?.socialCategory || 'SC',
+    status: profile
+      ? `${profile.education_level || 'Graduate'} • ${profile.is_student ? 'Enrolled Student' : 'Non-Student'}`
+      : localDraft
+      ? `${localDraft.educationLevel} • ${localDraft.isStudent ? 'Enrolled Student' : 'Non-Student'}`
+      : 'Student (Bachelor of Science)',
+    annualIncome: profile?.annual_family_income ?? localDraft?.annualFamilyIncome ?? 180000,
+    hasProfile: Boolean(profile?.district || localDraft?.district),
+  };
 
   // Recommended schemes based on profile
   const recommendedSchemes = [
     {
       ...VERIFIED_SCHEMES[2], // Post Matric Scholarship SC
       matchStatus: 'POTENTIALLY_ELIGIBLE' as const,
-      matchReason: 'Matches Category (SC), Student status, and Income < ₹2.5L',
+      matchReason: `Matches Category (${citizen.category}), Student status, and Income < ₹2.5L`,
       documentReadiness: 80,
     },
     {
@@ -60,18 +71,42 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
+      {/* Onboarding Incomplete Banner (if applicant has no profile yet) */}
+      {!citizen.hasProfile && (
+        <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-50 to-blue-50 border border-emerald-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-subtle">
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-civic-emerald text-white flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900">
+                Complete your 2-minute onboarding questionnaire
+              </h3>
+              <p className="text-xs text-slate-600 mt-0.5">
+                Tell us your age, location, and education to evaluate personalized eligibility across 500+ Central and State welfare rules.
+              </p>
+            </div>
+          </div>
+          <Link to="/onboarding" className="shrink-0 w-full sm:w-auto">
+            <Button variant="primary" size="sm" className="w-full sm:w-auto" rightIcon={<ArrowRight className="w-4 h-4" />}>
+              Start Onboarding
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* 1. Applicant Profile Summary Banner */}
       <div className="bg-white border border-civic-border rounded-2xl p-6 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-start gap-4">
           <div className="w-14 h-14 rounded-2xl bg-civic-navy text-white font-bold flex items-center justify-center text-xl shrink-0 shadow-xs">
-            प्रि
+            {citizen.name.charAt(0).toUpperCase()}
           </div>
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{citizen.name}</h1>
               <Badge variant="eligible" size="sm">
                 <CheckCircle2 className="w-3 h-3" />
-                <span>Profile Active & Verified</span>
+                <span>{user ? 'Cloud Profile Active' : 'Local Profile Active'}</span>
               </Badge>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
