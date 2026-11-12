@@ -12,8 +12,13 @@ import {
 import { Navbar } from './Navbar';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/Badge';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const DashboardLayout: React.FC = () => {
+  const { user, profile } = useAuth();
+  const citizenName = profile?.full_name || user?.email?.split('@')[0] || 'Citizen Profile';
+  const initialLetter = citizenName.charAt(0).toUpperCase();
+
   const sidebarLinks = [
     { to: '/dashboard', label: 'Readiness Overview', icon: LayoutDashboard, end: true },
     { to: '/vault', label: 'Document Vault', icon: FileCheck2 },
@@ -34,13 +39,13 @@ export const DashboardLayout: React.FC = () => {
             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
               <div className="flex items-center gap-3 pb-3 mb-3 border-b border-slate-100">
                 <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-sm">
-                  ना
+                  {initialLetter}
                 </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Citizen Profile</h3>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-semibold text-slate-900 truncate">{citizenName}</h3>
                   <div className="flex items-center gap-1 mt-0.5">
                     <Badge variant="eligible" size="sm">
-                      Profile Active
+                      {user ? 'Verified Citizen' : 'Guest Mode'}
                     </Badge>
                   </div>
                 </div>

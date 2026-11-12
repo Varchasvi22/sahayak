@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Compass,
   FileCheck2,
@@ -10,13 +10,23 @@ import {
   X,
   ShieldCheck,
   UserCheck,
+  LogOut,
+  User,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   const navLinks = [
     { to: '/schemes', label: 'Explore Schemes', icon: Compass },
@@ -90,16 +100,47 @@ export const Navbar: React.FC = () => {
 
           {/* Desktop Right Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <Link to="/login">
-              <Button variant="ghost" size="sm" leftIcon={<UserCheck className="w-4 h-4" />}>
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/onboarding">
-              <Button variant="primary" size="sm">
-                Check Eligibility
-              </Button>
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-2">
+                <Link
+                  to="/profile"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                >
+                  <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
+                    {profile?.full_name ? profile.full_name[0].toUpperCase() : 'C'}
+                  </div>
+                  <span className="max-w-[120px] truncate">
+                    {profile?.full_name || user.email?.split('@')[0]}
+                  </span>
+                </Link>
+                <Link to="/dashboard">
+                  <Button variant="outline" size="sm">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSignOut}
+                  leftIcon={<LogOut className="w-4 h-4" />}
+                >
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" size="sm" leftIcon={<UserCheck className="w-4 h-4" />}>
+                    Sign In
+                  </Button>
+                </Link>
+                <Link to="/onboarding">
+                  <Button variant="primary" size="sm">
+                    Check Eligibility
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Hamburger */}
@@ -147,16 +188,50 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
-            <Link to="/onboarding" onClick={closeMobileMenu}>
-              <Button variant="primary" className="w-full">
-                Check Eligibility
-              </Button>
-            </Link>
-            <Link to="/login" onClick={closeMobileMenu}>
-              <Button variant="outline" className="w-full">
-                Sign In / Register
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                <div className="flex items-center gap-3 px-3 py-2 bg-slate-50 rounded-lg">
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
+                    {profile?.full_name ? profile.full_name[0].toUpperCase() : 'C'}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-slate-900">
+                      {profile?.full_name || 'Citizen User'}
+                    </span>
+                    <span className="text-xs text-slate-500 truncate">{user.email}</span>
+                  </div>
+                </div>
+                <Link to="/dashboard" onClick={closeMobileMenu}>
+                  <Button variant="primary" className="w-full">
+                    My Dashboard
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    closeMobileMenu();
+                    handleSignOut();
+                  }}
+                  leftIcon={<LogOut className="w-4 h-4" />}
+                >
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/onboarding" onClick={closeMobileMenu}>
+                  <Button variant="primary" className="w-full">
+                    Check Eligibility
+                  </Button>
+                </Link>
+                <Link to="/login" onClick={closeMobileMenu}>
+                  <Button variant="outline" className="w-full">
+                    Sign In / Register
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

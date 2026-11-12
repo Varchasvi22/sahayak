@@ -178,5 +178,16 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       open: false,
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-ui': ['lucide-react', 'clsx', 'tailwind-merge'],
+            'vendor-data': ['@supabase/supabase-js', 'zod'],
+          },
+        },
+      },
+    },
   };
 });

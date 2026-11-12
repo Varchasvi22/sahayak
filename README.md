@@ -132,20 +132,35 @@ npm run dev
 ```
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-### 5. Running Type Checks
+### 5. Running Automated Test Suites
+Sahayak features 6 comprehensive, automated test suites (over 100 assertions):
 ```bash
-npm run type-check
+# Run all test suites
+npm run test
+
+# Run individual domain suites
+npm run test:eligibility   # Deterministic eligibility evaluation engine
+npm run test:documents     # Cross-scheme deduplication & readiness meter
+npm run test:dashboard     # Applicant profile, readiness, & application tracker
+npm run test:assistant     # RAG context retrieval, source citations, & fallback
+npm run test:admin         # RBAC, audit logging, & statutory publication guardrails
+npm run test:qa            # Complete 15-step functional user journey & 6 edge cases
 ```
 
-### 6. Building for Production
+### 6. Running Type Checks & Production Build
 ```bash
+# Strict TypeScript validation
+npm run type-check
+
+# Optimized production build with vendor chunking
 npm run build
 ```
 
 ---
 
-## 📚 Technical Documentation
+## 📚 Technical Documentation & Deployment
 
+- [Production Deployment Guide (DEPLOYMENT.md)](DEPLOYMENT.md)
 - [System Architecture Specification (ARCHITECTURE.md)](ARCHITECTURE.md)
 - [21-Day Phased Implementation Plan (PROJECT_PLAN.md)](PROJECT_PLAN.md)
 
