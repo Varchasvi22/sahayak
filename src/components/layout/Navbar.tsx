@@ -24,6 +24,7 @@ export const Navbar: React.FC = () => {
     { to: '/vault', label: 'Document Vault', icon: FileCheck2 },
     { to: '/saved', label: 'Saved Schemes', icon: BookmarkCheck },
     { to: '/assistant', label: 'AI Assistant', icon: Bot },
+    { to: '/admin', label: 'Admin Console', icon: ShieldCheck },
   ];
 
   const closeMobileMenu = () => setMobileMenuOpen(false);

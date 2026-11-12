@@ -1,6 +1,11 @@
 /**
- * Features: Admin Management
- * Scheme curation, verification timestamps, and official portal link maintenance
- * Scheduled for Phase 5
+ * SAHAYAK Scheme Admin & Verification Management Module
  */
-export {};
+
+export * from './types';
+export * from './validation';
+export * from './adminService';
+export * from './components/AdminAuthGate';
+export * from './components/SchemePreviewModal';
+export * from './components/AuditLogDrawer';
+export * from './components/SchemeEditorModal';

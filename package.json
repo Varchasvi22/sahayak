@@ -12,7 +12,8 @@
     "test:documents": "tsx src/features/documents/__tests__/crossSchemeIntelligence.test.ts",
     "test:dashboard": "tsx src/features/dashboard/__tests__/dashboard.test.ts",
     "test:assistant": "tsx src/features/assistant/__tests__/assistant.test.ts",
-    "test": "npm run test:eligibility && npm run test:documents && npm run test:dashboard && npm run test:assistant"
+    "test:admin": "tsx src/features/admin/__tests__/admin.test.ts",
+    "test": "npm run test:eligibility && npm run test:documents && npm run test:dashboard && npm run test:assistant && npm run test:admin"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

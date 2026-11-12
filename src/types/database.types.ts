@@ -52,6 +52,10 @@ export interface Database {
           official_application_url: string;
           official_portal_name: string;
           status: 'OPEN' | 'CLOSING_SOON' | 'CLOSED' | 'ALWAYS_ACTIVE';
+          publication_status?: 'DRAFT' | 'PENDING_VERIFICATION' | 'VERIFIED' | 'NEEDS_REVIEW' | 'ARCHIVED';
+          verified_by_id?: string | null;
+          verified_by_name?: string | null;
+          audit_notes?: string | null;
           academic_or_financial_year: string | null;
           is_active: boolean;
           last_verified_at: string;
@@ -73,6 +77,10 @@ export interface Database {
           official_application_url: string;
           official_portal_name: string;
           status?: 'OPEN' | 'CLOSING_SOON' | 'CLOSED' | 'ALWAYS_ACTIVE';
+          publication_status?: 'DRAFT' | 'PENDING_VERIFICATION' | 'VERIFIED' | 'NEEDS_REVIEW' | 'ARCHIVED';
+          verified_by_id?: string | null;
+          verified_by_name?: string | null;
+          audit_notes?: string | null;
           academic_or_financial_year?: string | null;
           is_active?: boolean;
           last_verified_at?: string;
@@ -94,6 +102,10 @@ export interface Database {
           official_application_url?: string;
           official_portal_name?: string;
           status?: 'OPEN' | 'CLOSING_SOON' | 'CLOSED' | 'ALWAYS_ACTIVE';
+          publication_status?: 'DRAFT' | 'PENDING_VERIFICATION' | 'VERIFIED' | 'NEEDS_REVIEW' | 'ARCHIVED';
+          verified_by_id?: string | null;
+          verified_by_name?: string | null;
+          audit_notes?: string | null;
           academic_or_financial_year?: string | null;
           is_active?: boolean;
           last_verified_at?: string;
@@ -530,6 +542,104 @@ export interface Database {
             referencedColumns: ['id'];
           }
         ];
+      };
+      scheme_audit_logs: {
+        Row: {
+          id: string;
+          scheme_id: string;
+          action:
+            | 'SCHEME_CREATED'
+            | 'SCHEME_UPDATED'
+            | 'STATUS_CHANGED'
+            | 'PUBLICATION_STATUS_CHANGED'
+            | 'SCHEME_DEACTIVATED'
+            | 'SCHEME_REACTIVATED'
+            | 'RULES_UPDATED'
+            | 'DOCUMENTS_UPDATED'
+            | 'SOURCES_UPDATED';
+          performed_by_id: string | null;
+          performed_by_name: string;
+          performed_by_email: string | null;
+          previous_state: Json | null;
+          new_state: Json | null;
+          change_summary: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          scheme_id: string;
+          action:
+            | 'SCHEME_CREATED'
+            | 'SCHEME_UPDATED'
+            | 'STATUS_CHANGED'
+            | 'PUBLICATION_STATUS_CHANGED'
+            | 'SCHEME_DEACTIVATED'
+            | 'SCHEME_REACTIVATED'
+            | 'RULES_UPDATED'
+            | 'DOCUMENTS_UPDATED'
+            | 'SOURCES_UPDATED';
+          performed_by_id?: string | null;
+          performed_by_name: string;
+          performed_by_email?: string | null;
+          previous_state?: Json | null;
+          new_state?: Json | null;
+          change_summary: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          scheme_id?: string;
+          action?:
+            | 'SCHEME_CREATED'
+            | 'SCHEME_UPDATED'
+            | 'STATUS_CHANGED'
+            | 'PUBLICATION_STATUS_CHANGED'
+            | 'SCHEME_DEACTIVATED'
+            | 'SCHEME_REACTIVATED'
+            | 'RULES_UPDATED'
+            | 'DOCUMENTS_UPDATED'
+            | 'SOURCES_UPDATED';
+          performed_by_id?: string | null;
+          performed_by_name?: string;
+          performed_by_email?: string | null;
+          previous_state?: Json | null;
+          new_state?: Json | null;
+          change_summary?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'scheme_audit_logs_scheme_id_fkey';
+            columns: ['scheme_id'];
+            isOneToOne: false;
+            referencedRelation: 'schemes';
+            referencedColumns: ['id'];
+          }
+        ];
+      };
+      admin_roles: {
+        Row: {
+          user_id: string;
+          email: string;
+          role: 'ADMIN' | 'SUPER_ADMIN' | 'REVIEWER';
+          assigned_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          email: string;
+          role?: 'ADMIN' | 'SUPER_ADMIN' | 'REVIEWER';
+          assigned_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          email?: string;
+          role?: 'ADMIN' | 'SUPER_ADMIN' | 'REVIEWER';
+          assigned_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
