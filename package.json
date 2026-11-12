@@ -8,7 +8,9 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "test:eligibility": "tsx src/features/eligibility/__tests__/evaluator.test.ts"
+    "test:eligibility": "tsx src/features/eligibility/__tests__/evaluator.test.ts",
+    "test:documents": "tsx src/features/documents/__tests__/crossSchemeIntelligence.test.ts",
+    "test": "npm run test:eligibility && npm run test:documents"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

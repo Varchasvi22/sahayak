@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -7,6 +7,9 @@ import { formatINR } from '@/lib/utils';
 import { VERIFIED_SCHEMES } from '@/data/mockSchemes';
 import { useAuth } from '@/contexts/AuthContext';
 import { getLocalOnboarding } from '@/services/profileService';
+import { fetchUserDocumentItems } from '@/services/userDocumentService';
+import { aggregateSchemeDocuments } from '@/features/documents/crossSchemeIntelligence';
+import { UserDocumentItem } from '@/features/documents/types';
 import {
   TrendingUp,
   AlertTriangle,
@@ -62,6 +65,23 @@ export const DashboardPage: React.FC = () => {
   const [savedSchemes, setSavedSchemes] = useState<string[]>([
     'sch-post-matric-sc',
   ]);
+
+  const [userDocs, setUserDocs] = useState<UserDocumentItem[]>([]);
+
+  useEffect(() => {
+    fetchUserDocumentItems(user?.id).then((docs) => setUserDocs(docs));
+  }, [user?.id]);
+
+  const documentMetrics = useMemo(() => {
+    const schemesInput = VERIFIED_SCHEMES.map((s) => ({
+      id: s.id,
+      name: s.official_name,
+      slug: s.slug,
+      governmentLevel: s.government_level,
+      required_document_keys: s.required_document_keys,
+    }));
+    return aggregateSchemeDocuments(schemesInput, userDocs);
+  }, [userDocs]);
 
   const toggleSave = (id: string) => {
     setSavedSchemes((prev) =>
@@ -146,16 +166,26 @@ export const DashboardPage: React.FC = () => {
               Application Readiness
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-slate-900">75%</span>
+              <span className="text-3xl font-extrabold text-slate-900">
+                {documentMetrics.completionPercentage}%
+              </span>
               <span className="text-xs font-semibold text-civic-emerald flex items-center">
-                <TrendingUp className="w-3.5 h-3.5 mr-0.5" /> High
+                <TrendingUp className="w-3.5 h-3.5 mr-0.5" />
+                {documentMetrics.completionPercentage >= 75
+                  ? 'High'
+                  : documentMetrics.completionPercentage >= 40
+                  ? 'Moderate'
+                  : 'Action Needed'}
               </span>
             </div>
-            <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2">
-              <div className="bg-civic-emerald h-1.5 rounded-full" style={{ width: '75%' }}></div>
+            <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2 overflow-hidden flex">
+              <div
+                className="bg-civic-emerald h-1.5 rounded-full transition-all duration-500"
+                style={{ width: `${documentMetrics.completionPercentage}%` }}
+              ></div>
             </div>
             <p className="text-[11px] text-slate-400 pt-1">
-              3 of 4 required certificates ready
+              {documentMetrics.availableCount} of {documentMetrics.totalUniqueRequired} unique certificates ready
             </p>
           </CardHeader>
         </Card>
@@ -198,36 +228,58 @@ export const DashboardPage: React.FC = () => {
               Missing Certificates
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-amber-700">1</span>
+              <span className="text-3xl font-extrabold text-amber-700">
+                {documentMetrics.missingCount + documentMetrics.expiredCount}
+              </span>
               <span className="text-xs font-semibold text-amber-600">Action Needed</span>
             </div>
             <p className="text-[11px] text-slate-400 pt-3">
-              Income cert requires annual renewal
+              {documentMetrics.expiredCount > 0
+                ? `${documentMetrics.expiredCount} expired / renewal needed`
+                : `${documentMetrics.missingCount} certificates missing`}
             </p>
           </CardHeader>
         </Card>
       </div>
 
       {/* 3. Missing Document Alert Card (High Leverage) */}
-      <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <div className="space-y-0.5">
-            <h4 className="text-xs font-bold text-amber-900">
-              High-Leverage Document Action: Renew Income Certificate
-            </h4>
-            <p className="text-xs text-amber-800 leading-relaxed max-w-2xl">
-              Your previous Income Certificate has expired. Renewing it at your local Tehsildar office
-              or UP e-District portal brings your <strong>Post-Matric Scholarship</strong> readiness to <strong>100%</strong>.
-            </p>
+      {documentMetrics.highLeverageDocument && (
+        <div className="p-4 bg-amber-50/80 border border-amber-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <h4 className="text-xs font-bold text-amber-900">
+                  High-Leverage Recommendation:{' '}
+                  {documentMetrics.highLeverageDocument.status === 'EXPIRED' ? 'Renew' : 'Obtain'}{' '}
+                  {documentMetrics.highLeverageDocument.documentName}
+                </h4>
+                <Badge variant="eligible" size="sm">
+                  Unlocks {documentMetrics.highLeverageDocument.leverageCount} Schemes
+                </Badge>
+              </div>
+              <p className="text-xs text-amber-800 leading-relaxed max-w-2xl">
+                Preparing this single certificate directly satisfies requirements for{' '}
+                <strong>
+                  {documentMetrics.highLeverageDocument.linkedSchemes
+                    .map((s) => s.schemeName)
+                    .join(', ')}
+                </strong>
+                .
+              </p>
+            </div>
           </div>
+          <Link to="/vault" className="shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-white border-amber-300 text-amber-900 hover:bg-amber-100"
+            >
+              Open Document Vault
+            </Button>
+          </Link>
         </div>
-        <Link to="/vault" className="shrink-0">
-          <Button variant="outline" size="sm" className="bg-white border-amber-300 text-amber-900 hover:bg-amber-100">
-            Open Document Vault
-          </Button>
-        </Link>
-      </div>
+      )}
 
       {/* 4. Two-Column Layout: Recommended Schemes vs. Tasks & Saved */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -29,6 +29,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/vault" element={<DocumentVaultPage />} />
         <Route path="/checklist" element={<DocumentVaultPage />} />
+        <Route path="/documents" element={<DocumentVaultPage />} />
         <Route path="/saved" element={<SavedSchemesPage />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/tracker" element={<TasksPage />} />
