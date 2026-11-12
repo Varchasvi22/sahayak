@@ -1,4 +1,4 @@
-import { defineConfig, Plugin } from 'vite';
+import { defineConfig, loadEnv, Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
@@ -55,15 +55,21 @@ function sahayakAssistantPlugin(): Plugin {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), sahayakAssistantPlugin()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  // Populate process.env so server-side middleware and SSR modules can access server-only keys securely
+  Object.assign(process.env, env);
+
+  return {
+    plugins: [react(), sahayakAssistantPlugin()],
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
     },
-  },
-  server: {
-    port: 5173,
-    open: false,
-  },
+    server: {
+      port: 5173,
+      open: false,
+    },
+  };
 });

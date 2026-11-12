@@ -15,11 +15,14 @@ export class GeminiProvider implements LLMProvider {
   private model: string;
   private fallback: GroundedFallbackProvider;
 
-  constructor(apiKey?: string, model = 'gemini-1.5-flash') {
+  constructor(apiKey?: string, model = 'gemini-3.5-flash-lite') {
     this.apiKey =
       apiKey ||
       (typeof process !== 'undefined'
-        ? process.env.GEMINI_API_KEY || process.env.LLM_API_KEY || ''
+        ? process.env.GEMINI_API_KEY ||
+          process.env.VITE_GEMINI_API_KEY ||
+          process.env.LLM_API_KEY ||
+          ''
         : '');
     this.model = model;
     this.fallback = new GroundedFallbackProvider();

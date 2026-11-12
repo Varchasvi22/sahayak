@@ -25,6 +25,32 @@ export class GroundedFallbackProvider implements LLMProvider {
     provider: string;
   }> {
     const lastUserMessage = messages[messages.length - 1]?.content || context.query;
+    const lower = lastUserMessage.toLowerCase().trim();
+    const isGreeting = /^(hi|hello|hey|namaste|vanakkam|pranam|help|who are you|what is sahayak)/i.test(lower);
+
+    // Case 0: Conversational greeting or platform introduction
+    if (isGreeting && !context.isConfidentMatch) {
+      return {
+        text: `Namaste! I am **Sahayak**, your AI welfare guidance assistant for Indian government schemes.
+
+I can help you:
+- **Discover relevant Central and State schemes** (e.g. PM-KISAN, PMAY-G, NSP Scholarships, Ayushman Bharat).
+- **Understand statutory eligibility criteria** (income ceilings, age limits, landholding criteria).
+- **Find mandatory documents & certificates** needed before applying.
+- **Guide you through official application portals**.
+
+How can I assist you or your family today? You can ask me about a specific scheme or search our verified directory.`,
+        sources: [
+          {
+            title: 'National Government Services Portal',
+            url: 'https://services.india.gov.in',
+            sourceType: 'OFFICIAL_PORTAL',
+            departmentName: 'Government of India',
+          },
+        ],
+        provider: this.name,
+      };
+    }
 
     // Case 1: No match in verified database
     if (!context.isConfidentMatch) {
