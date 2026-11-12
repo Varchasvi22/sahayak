@@ -1,6 +1,11 @@
 /**
- * Features: Readiness Dashboard
- * Score meter, missing document alerts, and application task tracker
- * Scheduled for Phase 4
+ * SAHAYAK Applicant Dashboard Module
  */
-export {};
+
+export * from './dashboardUtils';
+export * from './components/DashboardWelcomeHeader';
+export * from './components/ProfileCompletenessCard';
+export * from './components/ApplicationTrackerSection';
+export * from './components/PendingTasksCard';
+export * from './components/RecommendedSchemesSection';
+export * from './components/DashboardDocumentsOverview';

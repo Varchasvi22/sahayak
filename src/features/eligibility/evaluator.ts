@@ -157,6 +157,13 @@ export function evaluateAtomicRule(
   }
 
   // 2. Resolve field value from applicant profile
+  const expectedVal =
+    rule.expectedValue !== undefined
+      ? rule.expectedValue
+      : (rule as any).value !== undefined
+      ? (rule as any).value
+      : (rule as any).expected_value;
+
   const resolution = resolveProfileValue(profile, rule.field);
 
   if (!resolution.isProvided) {
@@ -164,7 +171,7 @@ export function evaluateAtomicRule(
       ruleId: rule.id,
       field: rule.field,
       operator: rule.operator,
-      expectedValue: rule.expectedValue,
+      expectedValue: expectedVal,
       actualValue: null,
       status: 'UNKNOWN',
       isMandatory,
@@ -178,7 +185,7 @@ export function evaluateAtomicRule(
   const opResult = evaluateOperator(
     rule.operator,
     resolution.value,
-    rule.expectedValue,
+    expectedVal,
     label,
     rule.field
   );
@@ -187,7 +194,7 @@ export function evaluateAtomicRule(
     ruleId: rule.id,
     field: rule.field,
     operator: rule.operator,
-    expectedValue: rule.expectedValue,
+    expectedValue: expectedVal,
     actualValue: resolution.value,
     status: opResult.passed ? 'PASSED' : 'FAILED',
     isMandatory,
