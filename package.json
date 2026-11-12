@@ -11,7 +11,8 @@
     "test:eligibility": "tsx src/features/eligibility/__tests__/evaluator.test.ts",
     "test:documents": "tsx src/features/documents/__tests__/crossSchemeIntelligence.test.ts",
     "test:dashboard": "tsx src/features/dashboard/__tests__/dashboard.test.ts",
-    "test": "npm run test:eligibility && npm run test:documents && npm run test:dashboard"
+    "test:assistant": "tsx src/features/assistant/__tests__/assistant.test.ts",
+    "test": "npm run test:eligibility && npm run test:documents && npm run test:dashboard && npm run test:assistant"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
